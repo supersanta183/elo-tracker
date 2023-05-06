@@ -1,16 +1,17 @@
-import React, {FC, useState} from 'react'
+import React, { FC, useState } from 'react'
 import { IPlayer, IMatch } from '../../typings';
 import handleAddMatch from '@/common/handleMatchEmilio183';
-import handleAddPlayer, {handleFetchPlayers} from '@/common/handlePlayerEmilio183';
+import handleAddPlayer, { handleFetchPlayers } from '@/common/handlePlayerEmilio183';
 import { v4 as uuid } from 'uuid'
 
 interface props {
     players: IPlayer[];
     setPlayers: React.Dispatch<React.SetStateAction<IPlayer[]>>;
-    fetchMatches: () => void;
+    fetchMatches: (amount: number) => void;
+    amount: number;
 }
 
-const AddMatchModal: FC<props> = ({players, setPlayers, fetchMatches}) => {
+const AddMatchModal: FC<props> = ({ players, setPlayers, fetchMatches, amount }) => {
     const [playerOne, setPlayerOne] = useState<IPlayer | null>(null)
     const [playerTwo, setPlayerTwo] = useState<IPlayer | null>(null)
     const [playerThree, setPlayerThree] = useState<IPlayer | null>(null)
@@ -22,10 +23,10 @@ const AddMatchModal: FC<props> = ({players, setPlayers, fetchMatches}) => {
     const handlePostMatch = () => {
         if (teamSize === 1) {
             postSoloMatch()
-            fetchMatches()
-        }else if (teamSize === 2) {
+            fetchMatches(amount)
+        } else if (teamSize === 2) {
             postDuoMatch()
-            fetchMatches()
+            fetchMatches(amount)
         }
     }
 
@@ -83,7 +84,7 @@ const AddMatchModal: FC<props> = ({players, setPlayers, fetchMatches}) => {
         tempPlayers.sort((a, b) => (
             b.soloRating - a.soloRating
         ))
-        for(let i = 0; i < tempPlayers.length; i++) {
+        for (let i = 0; i < tempPlayers.length; i++) {
             if (i === 0) {
                 tempPlayers[i].rank = 1
                 await handleAddPlayer(tempPlayers[i])
@@ -94,52 +95,59 @@ const AddMatchModal: FC<props> = ({players, setPlayers, fetchMatches}) => {
                 await handleAddPlayer(tempPlayers[i])
                 continue
             } else {
-                tempPlayers[i].rank = tempPlayers[i-1].rank + 1
+                tempPlayers[i].rank = tempPlayers[i - 1].rank + 1
                 await handleAddPlayer(tempPlayers[i])
                 continue
             }
         }
     }
 
-    function calculateSoloElo(playerRating:number, opponentRating:number, playerWon:Boolean, goalDifference:number, K = 10) {
+    function calculateSoloElo(playerRating: number, opponentRating: number, playerWon: Boolean, goalDifference: number, K = 10) {
         const expectedOutcome = 1 / (1 + Math.pow(10, (opponentRating - playerRating) / 400));
         const actualOutcome = playerWon ? 1 : 0;
-      
+
         // Calculate the weight based on the goal difference
         const weight = 1 + (goalDifference - 1) / 2;
-      
+
         const newRating = playerRating + K * weight * (actualOutcome - expectedOutcome);
         return Math.round(newRating);
-      }
+    }
 
-      function calculateDuoElo(player1Rating:number, player2Rating:number, player3Rating:number, player4Rating:number, team1Won:Boolean, goalDifference:number, K = 10) {
+    function calculateDuoElo(player1Rating: number, player2Rating: number, player3Rating: number, player4Rating: number, team1Won: Boolean, goalDifference: number, K = 10) {
         const team1Rating = (player1Rating + player2Rating) / 2;
         const team2Rating = (player3Rating + player4Rating) / 2;
-      
+
         const expectedOutcomeTeam1 = 1 / (1 + Math.pow(10, (team2Rating - team1Rating) / 400));
         const expectedOutcomeTeam2 = 1 / (1 + Math.pow(10, (team1Rating - team2Rating) / 400));
-      
+
         const actualOutcomeTeam1 = team1Won ? 1 : 0;
         const actualOutcomeTeam2 = team1Won ? 0 : 1;
-      
+
         const weight = 1 + (goalDifference - 1) / 2;
-      
+
         const ratingChangeTeam1 = K * weight * (actualOutcomeTeam1 - expectedOutcomeTeam1) / 2; // Distribute K factor between two players
         const ratingChangeTeam2 = K * weight * (actualOutcomeTeam2 - expectedOutcomeTeam2) / 2; // Distribute K factor between two players
-      
+
         const newPlayer1Rating = player1Rating + ratingChangeTeam1;
         const newPlayer2Rating = player2Rating + ratingChangeTeam1;
         const newPlayer3Rating = player3Rating + ratingChangeTeam2;
         const newPlayer4Rating = player4Rating + ratingChangeTeam2;
-      
+
         return [Math.round(newPlayer1Rating), Math.round(newPlayer2Rating), Math.round(newPlayer3Rating), Math.round(newPlayer4Rating)];
-      }
+    }
 
 
 
-  return (
-   <div className='w-full'>
-   <label htmlFor='add-player-modal' className='btn w-full lg:w-1/4'>New Match</label>
+    return (
+        <div className='w-full pr-2'>
+            {/* plus button to add a match */}
+            <div className='fixed z-10 top-0 left-0 w-screen h-screen-50 flex items-end justify-end'>
+                <label htmlFor='add-player-modal' className='btn z-10 rounded-full mr-5 lg:mr-10'>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+                </label>
+            </div>
             <input type="checkbox" id="add-player-modal" className="modal-toggle" />
             <div className="modal">
                 <div className="modal-box relative">
@@ -232,12 +240,12 @@ const AddMatchModal: FC<props> = ({players, setPlayers, fetchMatches}) => {
 
                     </div>
                     <div className="modal-action">
-                        <label htmlFor="add-player-modal" onClick={handlePostMatch} className="btn">Add match</label>
+                        <div className='w-full'><label htmlFor="add-player-modal" onClick={handlePostMatch} className="btn w-full">Add match</label></div>
                     </div>
                 </div>
             </div>
-   </div>
-  )
+        </div>
+    )
 }
 
 export default AddMatchModal
