@@ -1,14 +1,13 @@
-import React, { useEffect } from 'react'
-import { handleFetchPlayerNames, handleFetchPlayers } from '@/common/handlePlayerEmilio183'
+import React from 'react'
+import { handleFetchPlayers } from '@/common/handlePlayerEmilio183'
 import handleAddPlayer from '@/common/handlePlayerEmilio183'
-import { IPlayer, IMatch } from '../../typings'
+import { IPlayer } from '../../typings'
 import handleAddMatch from '@/common/handleSoloMatchEmilio183'
 import { v4 as uuid } from 'uuid'
 
 function matches() {
     const [teamSize, setTeamSize] = React.useState<number>(1)
     const [players, setPlayers] = React.useState<IPlayer[]>([])
-    const [matches, setMatches] = React.useState<IMatch[]>([])
     const [playerOne, setPlayerOne] = React.useState<IPlayer | null>(null)
     const [playerTwo, setPlayerTwo] = React.useState<IPlayer | null>(null)
     const [playerThree, setPlayerThree] = React.useState<IPlayer | null>(null)
@@ -33,7 +32,7 @@ function matches() {
         const weight = 1 + (goalDifference - 1) / 2;
       
         const newRating = playerRating + K * weight * (actualOutcome - expectedOutcome);
-        return newRating;
+        return Math.round(newRating);
       }
 
       function calculateDuoElo(player1Rating:number, player2Rating:number, player3Rating:number, player4Rating:number, team1Won:Boolean, goalDifference:number, K = 10) {
@@ -56,12 +55,14 @@ function matches() {
         const newPlayer3Rating = player3Rating + ratingChangeTeam2;
         const newPlayer4Rating = player4Rating + ratingChangeTeam2;
       
-        return [newPlayer1Rating, newPlayer2Rating, newPlayer3Rating, newPlayer4Rating];
+        return [Math.round(newPlayer1Rating), Math.round(newPlayer2Rating), Math.round(newPlayer3Rating), Math.round(newPlayer4Rating)];
       }
     const postSoloMatch = async () => {
         if (!playerOne || !playerThree) return
         playerOne.soloRating = calculateSoloElo(playerOne.soloRating, playerThree.soloRating, teamOneScore > teamTwoScore, Math.abs(teamOneScore - teamTwoScore))
+        playerOne.gamesPlayed += 1
         playerThree.soloRating = calculateSoloElo(playerThree.soloRating, playerOne.soloRating, teamTwoScore > teamOneScore, Math.abs(teamOneScore - teamTwoScore))
+        playerThree.gamesPlayed += 1
         handleAddPlayer(playerOne)
         handleAddPlayer(playerThree)
         const match = {
@@ -72,16 +73,21 @@ function matches() {
             teamOneScore: teamOneScore,
             teamTwoScore: teamTwoScore,
         }
-        const data = await handleAddMatch(match)
+        await handleAddMatch(match)
+        await updateRankings()
     }
 
     const postDuoMatch = async () => {
         if (!playerOne || !playerTwo || !playerThree || !playerFour) return
         const newRatings = calculateDuoElo(playerOne.teamRating, playerTwo.teamRating, playerThree.teamRating, playerFour.teamRating, teamOneScore > teamTwoScore, Math.abs(teamOneScore - teamTwoScore))
         playerOne.teamRating = newRatings[0]
+        playerOne.gamesPlayed += 1
         playerTwo.teamRating = newRatings[1]
+        playerTwo.gamesPlayed += 1
         playerThree.teamRating = newRatings[2]
+        playerThree.gamesPlayed += 1
         playerFour.teamRating = newRatings[3]
+        playerFour.gamesPlayed += 1
         handleAddPlayer(playerOne)
         handleAddPlayer(playerTwo)
         handleAddPlayer(playerThree)
@@ -94,7 +100,31 @@ function matches() {
             teamOneScore: teamOneScore,
             teamTwoScore: teamTwoScore,
         }
-        const data = await handleAddMatch(match)
+        await handleAddMatch(match)
+        await updateRankings()
+    }
+
+    const updateRankings = async () => {
+        let tempPlayers: IPlayer[] = await handleFetchPlayers()
+        tempPlayers.sort((a, b) => (
+            b.soloRating - a.soloRating
+        ))
+        for(let i = 0; i < tempPlayers.length; i++) {
+            if (i === 0) {
+                tempPlayers[i].rank = 1
+                await handleAddPlayer(tempPlayers[i])
+                continue
+            }
+            if (tempPlayers[i].soloRating === tempPlayers[i - 1].soloRating) {
+                tempPlayers[i].rank = tempPlayers[i - 1].rank
+                await handleAddPlayer(tempPlayers[i])
+                continue
+            } else {
+                tempPlayers[i].rank = tempPlayers[i-1].rank + 1
+                await handleAddPlayer(tempPlayers[i])
+                continue
+            }
+        }
     }
 
     const handlePostMatch = () => {

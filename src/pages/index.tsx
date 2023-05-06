@@ -19,6 +19,9 @@ export default function Home() {
 
   const fetchPlayers = async () => {
     const data: IPlayer[] = await handleFetchPlayers()
+    data.sort((a, b) => ( //sort players by ranks in ascending order
+      a.rank - b.rank
+  ))
     setPlayers(data)
   }
 

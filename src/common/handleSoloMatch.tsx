@@ -3,7 +3,6 @@ import { setDoc, doc, collection, getDocs, deleteDoc, where, CollectionReference
 import { IMatch } from "../../typings";
 
 async function handleAddMatch(match:IMatch) {
-    console.log(match)
   const matchRef = collection(db, 'matches')
   await setDoc(doc(matchRef, match.id.toString()), match)
 }

@@ -4,8 +4,6 @@ import { IPlayer } from "../../typings";
 
 async function handleAddPlayer(player:IPlayer) {
   const playerRef = collection(db, 'players')
-  const playerNameRef = doc(collection(db, 'playerNames'), 'names')
-  await updateDoc(playerNameRef, {names: arrayUnion(player.name)})
   await setDoc(doc(playerRef, player.id.toString()), player)
 }
 

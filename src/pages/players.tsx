@@ -22,7 +22,7 @@ function players() {
     const addPlayer = async () => {
         const player = playerName
         setPlayerName('')
-        if (playerName !== '') {
+        if (player !== '') {
             await handleAddPlayer({
                 id: players.length + 1,
                 name: playerName,
@@ -31,6 +31,7 @@ function players() {
                 gamesPlayed: 0,
                 rank: 1,
             })
+            fetchPlayers()
         }
     }
 
