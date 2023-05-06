@@ -10,6 +10,7 @@ export interface IPlayer {
 export interface IMatch {
     id: string;
     type: string;
+    timeStamp: Date;
     playersTeamOne: IPlayer[];
     playersTeamTwo: IPlayer[];
     teamOneScore: number;

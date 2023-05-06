@@ -33,7 +33,7 @@ function Matches() {
         <div className='overflow-clip'>
             <div className='h-screen w-screen flex flex-col justify-start pl-2'>
                 <div className=''>
-                    <AddMatchModal players={players} setPlayers={setPlayers} />
+                    <AddMatchModal players={players} setPlayers={setPlayers} fetchMatches={fetchMatches} />
                 </div>
                 <div className=''>
                             <div>

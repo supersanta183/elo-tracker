@@ -1,5 +1,5 @@
 import { db } from "../../firebase";
-import { setDoc, doc, collection, getDocs, deleteDoc, where, CollectionReference, DocumentData} from 'firebase/firestore'
+import { setDoc, doc, collection, getDocs, deleteDoc, where, CollectionReference, DocumentData, query, orderBy} from 'firebase/firestore'
 import { IMatch } from "../../typings";
 
 async function handleAddMatch(match:IMatch) {
@@ -9,7 +9,8 @@ async function handleAddMatch(match:IMatch) {
 
 async function handleFetchMatches(): Promise<IMatch[]> {
   const matchRef = collection(db, 'matches')
-  const snapshot = await getDocs(matchRef)
+  const q = query(matchRef, orderBy("timeStamp", "desc"))
+  const snapshot = await getDocs(q)
   const matches: IMatch[] = []
 
   snapshot.forEach(doc => {

@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react'
-import { IPlayer } from '../../typings';
+import { IPlayer, IMatch } from '../../typings';
 import handleAddMatch from '@/common/handleMatchEmilio183';
 import handleAddPlayer, {handleFetchPlayers} from '@/common/handlePlayerEmilio183';
 import { v4 as uuid } from 'uuid'
@@ -7,10 +7,10 @@ import { v4 as uuid } from 'uuid'
 interface props {
     players: IPlayer[];
     setPlayers: React.Dispatch<React.SetStateAction<IPlayer[]>>;
-
+    fetchMatches: () => void;
 }
 
-const AddMatchModal: FC<props> = ({players, setPlayers}) => {
+const AddMatchModal: FC<props> = ({players, setPlayers, fetchMatches}) => {
     const [playerOne, setPlayerOne] = useState<IPlayer | null>(null)
     const [playerTwo, setPlayerTwo] = useState<IPlayer | null>(null)
     const [playerThree, setPlayerThree] = useState<IPlayer | null>(null)
@@ -22,8 +22,10 @@ const AddMatchModal: FC<props> = ({players, setPlayers}) => {
     const handlePostMatch = () => {
         if (teamSize === 1) {
             postSoloMatch()
+            fetchMatches()
         }else if (teamSize === 2) {
             postDuoMatch()
+            fetchMatches()
         }
     }
 
@@ -38,6 +40,7 @@ const AddMatchModal: FC<props> = ({players, setPlayers}) => {
         const match = {
             id: uuid(),
             type: "solo",
+            timeStamp: new Date(),
             playersTeamOne: [playerOne],
             playersTeamTwo: [playerThree],
             teamOneScore: teamOneScore,
@@ -65,6 +68,7 @@ const AddMatchModal: FC<props> = ({players, setPlayers}) => {
         const match = {
             id: uuid(),
             type: "duo",
+            timeStamp: new Date(),
             playersTeamOne: [playerOne, playerTwo],
             playersTeamTwo: [playerThree, playerFour],
             teamOneScore: teamOneScore,
