@@ -1,6 +1,6 @@
 import React, {FC, useState} from 'react'
 import { IPlayer } from '../../typings';
-import handleAddMatch from '@/common/handleSoloMatchEmilio183';
+import handleAddMatch from '@/common/handleMatchEmilio183';
 import handleAddPlayer, {handleFetchPlayers} from '@/common/handlePlayerEmilio183';
 import { v4 as uuid } from 'uuid'
 
@@ -134,8 +134,8 @@ const AddMatchModal: FC<props> = ({players, setPlayers}) => {
 
 
   return (
-   <>
-   <label htmlFor='add-player-modal' className='btn'>Add Match</label>
+   <div className='w-full'>
+   <label htmlFor='add-player-modal' className='btn w-full lg:w-1/4'>New Match</label>
             <input type="checkbox" id="add-player-modal" className="modal-toggle" />
             <div className="modal">
                 <div className="modal-box relative">
@@ -232,7 +232,7 @@ const AddMatchModal: FC<props> = ({players, setPlayers}) => {
                     </div>
                 </div>
             </div>
-   </>
+   </div>
   )
 }
 

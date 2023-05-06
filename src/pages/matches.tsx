@@ -1,34 +1,98 @@
 import React from 'react'
 import { handleFetchPlayers } from '@/common/handlePlayerEmilio183'
-import handleAddPlayer from '@/common/handlePlayerEmilio183'
-import { IPlayer } from '../../typings'
-import handleAddMatch from '@/common/handleSoloMatchEmilio183'
+import { handleFetchMatches } from '@/common/handleMatchEmilio183'
+import { IPlayer, IMatch } from '../../typings'
 import { v4 as uuid } from 'uuid'
 import { useState } from 'react'
-import AddMatchModal from '@/components/addMatchModalEmilio183'
+import AddMatchModal from '@/components/AddMatchModalEmilio183'
 
 function Matches() {
-    const [teamSize, setTeamSize] = useState<number>(1)
     const [players, setPlayers] = useState<IPlayer[]>([])
-    const [playerOne, setPlayerOne] = useState<IPlayer | null>(null)
-    const [playerTwo, setPlayerTwo] = useState<IPlayer | null>(null)
-    const [playerThree, setPlayerThree] = useState<IPlayer | null>(null)
-    const [playerFour, setPlayerFour] = useState<IPlayer | null>(null)
-    const [teamOneScore, setTeamOneScore] = useState<number>(0)
-    const [teamTwoScore, setTeamTwoScore] = useState<number>(0)
+    const [matches, setMatches] = useState<IMatch[]>([])
 
     React.useEffect(() => {
         fetchPlayers()
+        fetchMatches()
     }, [])
 
+    React.useEffect(() => {
+        console.log(matches)
+    }, [matches])
+
+    const fetchMatches = async () => {
+        const fetchedMatches: IMatch[] = await handleFetchMatches()
+        setMatches(fetchedMatches)
+    }
+
     const fetchPlayers = async () => {
-        const data: IPlayer[] = await handleFetchPlayers()
-        setPlayers(data)
+        const fetchedPlayers: IPlayer[] = await handleFetchPlayers()
+        setPlayers(fetchedPlayers)
     }
 
     return (
-        <div className='h-screen w-screen flex items-center justify-center'>
-            <AddMatchModal players={players} setPlayers={setPlayers} />
+        <div className='overflow-clip'>
+            <div className='h-screen w-screen flex flex-col justify-start pl-2'>
+                <div className=''>
+                    <AddMatchModal players={players} setPlayers={setPlayers} />
+                </div>
+                <div className=''>
+                            <div>
+                                <div className='overflow-x-auto'>
+                                    <table className='table w-full'>
+                                        <thead>
+                                            <tr>
+                                                <th></th>
+                                                <th>Match type</th>
+                                                <th>Team one</th>
+                                                <th>Team two</th>
+                                                <th>Team one score</th>
+                                                <th>Team two score</th>
+                                                <th>Winner</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                        {matches.map((match, index) => {
+                                            return (
+                                            <tr key={match.id}>
+                                                <th>{index}</th>
+                                                <td>{match.type}</td>
+                                                <td>
+                                                    {
+                                                        match.playersTeamOne.map((player) => {
+                                                            return (
+                                                                <div key={player.id}>
+                                                                    {player.name}
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </td>
+                                                <td>
+                                                    {
+                                                        match.playersTeamTwo.map((player) => {
+                                                            return (
+                                                                <div key={player.id}>
+                                                                    {player.name}
+                                                                </div>
+                                                            )
+                                                        })
+                                                    }
+                                                </td>
+                                                <td>{match.teamOneScore}</td>
+                                                <td>{match.teamTwoScore}</td>
+                                                <td>
+                                                    {
+                                                        match.teamOneScore > match.teamTwoScore ? (<div>Team one</div>) : (<div>Team two</div>)
+                                                    }
+                                                </td>
+                                            </tr>)
+                                        })}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                </div>
+            </div>
         </div>
     )
 }

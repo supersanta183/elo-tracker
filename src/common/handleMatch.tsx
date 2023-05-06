@@ -7,4 +7,17 @@ async function handleAddMatch(match:IMatch) {
   await setDoc(doc(matchRef, match.id.toString()), match)
 }
 
+async function handleFetchMatches(): Promise<IMatch[]> {
+  const matchRef = collection(db, 'matches')
+  const snapshot = await getDocs(matchRef)
+  const matches: IMatch[] = []
+
+  snapshot.forEach(doc => {
+    const matchData = doc.data()
+    matches.push({...matchData, id: doc.id,} as IMatch)
+  })
+  return matches
+}
+
 export default handleAddMatch
+export {handleFetchMatches}
