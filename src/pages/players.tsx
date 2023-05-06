@@ -1,10 +1,11 @@
 import React from 'react'
+import { useState } from 'react'
 import handleAddPlayer, {handleFetchPlayers} from '@/common/handlePlayerEmilio183'
 import { IPlayer } from '../../typings'
 
-function players() {
-    const [playerName, setPlayerName] = React.useState<string>('')
-    const [players, setPlayers] = React.useState<IPlayer[]>([])
+function Players() {
+    const [playerName, setPlayerName] = useState<string>('')
+    const [players, setPlayers] = useState<IPlayer[]>([])
 
     React.useEffect(() => {
         fetchPlayers()
@@ -54,4 +55,4 @@ function players() {
     )
 }
 
-export default players
+export default Players

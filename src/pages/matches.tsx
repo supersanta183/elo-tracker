@@ -4,16 +4,17 @@ import handleAddPlayer from '@/common/handlePlayerEmilio183'
 import { IPlayer } from '../../typings'
 import handleAddMatch from '@/common/handleSoloMatchEmilio183'
 import { v4 as uuid } from 'uuid'
+import { useState } from 'react'
 
-function matches() {
-    const [teamSize, setTeamSize] = React.useState<number>(1)
-    const [players, setPlayers] = React.useState<IPlayer[]>([])
-    const [playerOne, setPlayerOne] = React.useState<IPlayer | null>(null)
-    const [playerTwo, setPlayerTwo] = React.useState<IPlayer | null>(null)
-    const [playerThree, setPlayerThree] = React.useState<IPlayer | null>(null)
-    const [playerFour, setPlayerFour] = React.useState<IPlayer | null>(null)
-    const [teamOneScore, setTeamOneScore] = React.useState<number>(0)
-    const [teamTwoScore, setTeamTwoScore] = React.useState<number>(0)
+function Matches() {
+    const [teamSize, setTeamSize] = useState<number>(1)
+    const [players, setPlayers] = useState<IPlayer[]>([])
+    const [playerOne, setPlayerOne] = useState<IPlayer | null>(null)
+    const [playerTwo, setPlayerTwo] = useState<IPlayer | null>(null)
+    const [playerThree, setPlayerThree] = useState<IPlayer | null>(null)
+    const [playerFour, setPlayerFour] = useState<IPlayer | null>(null)
+    const [teamOneScore, setTeamOneScore] = useState<number>(0)
+    const [teamTwoScore, setTeamTwoScore] = useState<number>(0)
 
     React.useEffect(() => {
         fetchPlayers()
@@ -239,4 +240,4 @@ function matches() {
     )
 }
 
-export default matches
+export default Matches

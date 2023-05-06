@@ -2,16 +2,13 @@ import { Inter } from 'next/font/google'
 import React, { useEffect, Component } from 'react'
 import { IPlayer } from '../../typings'
 import handleAddPlayer, {handleFetchPlayers} from '@/common/handlePlayerEmilio183'
+import { useState } from 'react'
 
 
 const inter = Inter({ subsets: ['latin'] })
 
-interface props {
-  players: IPlayer[]
-}
-
 export default function Home() {
-  const [players, setPlayers] = React.useState<IPlayer[]>([])
+  const [players, setPlayers] = useState<IPlayer[]>([])
 
   React.useEffect(() => {
     fetchPlayers()
