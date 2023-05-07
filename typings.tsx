@@ -1,4 +1,5 @@
 export interface IPlayer {
+    image: string;
     id: number;
     name: string;
     soloRating: number;
