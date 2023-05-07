@@ -141,7 +141,7 @@ const AddMatchModal: FC<props> = ({ players, setPlayers, fetchMatches, amount })
     return (
         <div className='w-full pr-2'>
             {/* plus button to add a match */}
-            <div className='fixed z-10 top-0 left-0 w-screen h-screen-50 flex items-end justify-end'>
+            <div className='fixed z-10 bottom-14 right-0  flex items-end justify-end'>
                 <label htmlFor='add-player-modal' className='btn z-10 rounded-full mr-5 lg:mr-10'>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" className="w-6 h-6">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />

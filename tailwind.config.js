@@ -15,6 +15,7 @@ module.exports = {
       height: {
         'screen-50': 'calc(100vh - 50px)',
       },
+      position: ['sticky'],
     },
   },
   plugins: [require("daisyui")],
