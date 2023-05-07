@@ -17,6 +17,9 @@ function Players() {
 
     const fetchPlayers = async () => {
         const data: IPlayer[] = await handleFetchPlayers()
+        data.sort((a, b) => ( //sort players by ranks in ascending order
+            a.rank - b.rank
+        ))
         setPlayers(data)
     }
 
@@ -81,13 +84,13 @@ function Players() {
                                                 <div className='stat-value'>{player.gamesPlayed}</div>
                                             </div>
                                         </div>
-                                        
+
                                         <div className="card-actions">
                                             {
                                                 !player.image ?
-                                                <button className="btn btn-primary">Add image</button>
-                                                :
-                                                <button className="btn btn-primary">Change image</button>
+                                                    <button className="btn btn-primary">Add image</button>
+                                                    :
+                                                    <button className="btn btn-primary">Change image</button>
 
                                             }
                                         </div>
