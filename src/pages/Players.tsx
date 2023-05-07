@@ -60,7 +60,7 @@ function Players() {
                 {
                     players.map((player) => {
                         return (
-                            <div className='px-1 py-1 w-full lg:w-1/2 xl:w-1/3'>
+                            <div key={player.id} className='px-1 py-1 w-full lg:w-1/2 xl:w-1/3'>
                                 <div className="card w-full bg-base-100 shadow-xl border border-gray-800">
                                     <figure className="px-10 pt-10">
                                         <img src="/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" className="rounded-xl" />
