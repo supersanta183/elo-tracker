@@ -74,7 +74,7 @@ function Players() {
                     players.map((player) => {
                         return (
                             <div key={player.id} className='px-1 py-1 w-full lg:w-1/2 xl:w-1/3'>
-                                <div className="card w-full h-96 b-base-100 bg-base-100 shadow-xl border border-gray-800">
+                                <div className="card w-full h-full b-base-100 bg-base-100 shadow-xl border border-gray-800">
                                     <div className="avatar flex justify-center">
                                         <div className="w-56 rounded">
                                             <img src={player.image} />
