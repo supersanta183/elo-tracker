@@ -2,6 +2,7 @@ import React from 'react'
 import { useState } from 'react'
 import handleAddPlayer, { handleFetchPlayers } from '@/common/handlePlayerEmilio183'
 import { IPlayer } from '../../typings'
+import handlePostImage from '@/common/handleImageEmilio183'
 
 function Players() {
     const [playerName, setPlayerName] = useState<string>('')
@@ -40,6 +41,18 @@ function Players() {
         }
     }
 
+    const handleImage = async (e: React.ChangeEvent<HTMLInputElement>, player: IPlayer) => {
+        if (e.target.files && e.target.files[0]) {
+            const file = e.target.files[0];
+            const url = await handlePostImage(file);
+            if (player) {
+                player.image = url;
+                await handleAddPlayer(player);
+                fetchPlayers();
+            }
+        }
+    }
+
     return (
         <div>
             <div className='flex items-center justify-center'>
@@ -61,10 +74,12 @@ function Players() {
                     players.map((player) => {
                         return (
                             <div key={player.id} className='px-1 py-1 w-full lg:w-1/2 xl:w-1/3'>
-                                <div className="card w-full bg-base-100 shadow-xl border border-gray-800">
-                                    <figure className="px-10 pt-10">
-                                        <img src="/images/stock/photo-1606107557195-0e29a4b5b4aa.jpg" alt="Shoes" className="rounded-xl" />
-                                    </figure>
+                                <div className="card w-full h-96 b-base-100 bg-base-100 shadow-xl border border-gray-800">
+                                    <div className="avatar flex justify-center">
+                                        <div className="w-56 rounded">
+                                            <img src={player.image} />
+                                        </div>
+                                    </div>
                                     <div className="card-body items-center text-center">
                                         <div className='flex items-center'>
                                             <h2 className="card-title">{player.name} &nbsp;</h2>
@@ -86,13 +101,7 @@ function Players() {
                                         </div>
 
                                         <div className="card-actions">
-                                            {
-                                                !player.image ?
-                                                    <button className="btn btn-primary">Add image</button>
-                                                    :
-                                                    <button className="btn btn-primary">Change image</button>
-
-                                            }
+                                            <input type="file" className="file-input w-full max-w-xs" onChange={(e) => handleImage(e, player)} />
                                         </div>
                                     </div>
                                 </div>
@@ -100,7 +109,6 @@ function Players() {
                         )
                     })
                 }
-
             </div>
         </div>
     )
