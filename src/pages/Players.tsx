@@ -86,15 +86,15 @@ function Players() {
                                             <div className="badge badge-primary">#{player.rank}</div>
                                         </div>
                                         <div className='stats stats-vertical lg:stats-horizontal shadow w-full'>
-                                            <div className='stat place-items-center w-1/3'>
+                                            <div className='stat place-items-center w-full lg:w-1/3'>
                                                 <div className='stat-title'>Solo rating</div>
                                                 <div className='stat-value'>{player.soloRating}</div>
                                             </div>
-                                            <div className='stat place-items-center w-1/3'>
+                                            <div className='stat place-items-center w-full lg:w-1/3'>
                                                 <div className='stat-title'>team rating</div>
                                                 <div className='stat-value'>{player.teamRating}</div>
                                             </div>
-                                            <div className='stat place-items-center w-1/3'>
+                                            <div className='stat place-items-center w-full lg:w-1/3'>
                                                 <div className='stat-title'>Games played</div>
                                                 <div className='stat-value'>{player.gamesPlayed}</div>
                                             </div>
