@@ -18,5 +18,8 @@ module.exports = {
       position: ['sticky'],
     },
   },
+  daisyui: {
+    themes: ["dark"],
+  },
   plugins: [require("daisyui")],
 }

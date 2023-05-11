@@ -19,7 +19,7 @@ function Players() {
     const fetchPlayers = async () => {
         const data: IPlayer[] = await handleFetchPlayers()
         data.sort((a, b) => ( //sort players by ranks in ascending order
-            a.rank - b.rank
+            a.bordfodboldRank - b.bordfodboldRank
         ))
         setPlayers(data)
     }
@@ -32,10 +32,13 @@ function Players() {
                 id: players.length + 1,
                 image: "",
                 name: playerName,
-                soloRating: 1200,
-                teamRating: 1200,
-                gamesPlayed: 0,
-                rank: 1,
+                soloBordfodboldRating: 1200,
+                teamBordfodboldRating: 1200,
+                bordfodboldGamesPlayed: 0,
+                bordfodboldRank: 1,
+                soloBordTennisRating: 1200,
+                bordTennisGamesPlayed: 0,
+                bordTennisRank: 1,
             })
             fetchPlayers()
         }
@@ -83,20 +86,20 @@ function Players() {
                                     <div className="card-body items-center text-center">
                                         <div className='flex items-center'>
                                             <h2 className="card-title">{player.name} &nbsp;</h2>
-                                            <div className="badge badge-primary">#{player.rank}</div>
+                                            <div className="badge badge-primary">#{player.bordfodboldRank}</div>
                                         </div>
                                         <div className='stats stats-vertical lg:stats-horizontal shadow w-full'>
                                             <div className='stat place-items-center w-full lg:w-1/3'>
                                                 <div className='stat-title'>Solo rating</div>
-                                                <div className='stat-value'>{player.soloRating}</div>
+                                                <div className='stat-value'>{player.soloBordfodboldRating}</div>
                                             </div>
                                             <div className='stat place-items-center w-full lg:w-1/3'>
                                                 <div className='stat-title'>team rating</div>
-                                                <div className='stat-value'>{player.teamRating}</div>
+                                                <div className='stat-value'>{player.teamBordfodboldRating}</div>
                                             </div>
                                             <div className='stat place-items-center w-full lg:w-1/3'>
                                                 <div className='stat-title'>Games played</div>
-                                                <div className='stat-value'>{player.gamesPlayed}</div>
+                                                <div className='stat-value'>{player.bordfodboldGamesPlayed}</div>
                                             </div>
                                         </div>
 

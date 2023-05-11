@@ -8,11 +8,12 @@ import { v4 as uuid } from 'uuid'
 interface props {
     players: IPlayer[];
     setPlayers: React.Dispatch<React.SetStateAction<IPlayer[]>>;
+    fetchPlayers: () => void;
     fetchMatches: (amount: number) => void;
     amount: number;
 }
 
-const AddMatchModal: FC<props> = ({ players, setPlayers, fetchMatches, amount }) => {
+const AddBFMatchModal: FC<props> = ({ players, setPlayers, fetchPlayers, fetchMatches, amount }) => {
     const [playerOne, setPlayerOne] = useState<IPlayer | null>(null)
     const [playerTwo, setPlayerTwo] = useState<IPlayer | null>(null)
     const [playerThree, setPlayerThree] = useState<IPlayer | null>(null)
@@ -33,10 +34,10 @@ const AddMatchModal: FC<props> = ({ players, setPlayers, fetchMatches, amount })
 
     const postSoloMatch = async () => {
         if (!playerOne || !playerThree) return
-        playerOne.soloRating = calculateSoloElo(playerOne.soloRating, playerThree.soloRating, teamOneScore > teamTwoScore, Math.abs(teamOneScore - teamTwoScore))
-        playerOne.gamesPlayed += 1
-        playerThree.soloRating = calculateSoloElo(playerThree.soloRating, playerOne.soloRating, teamTwoScore > teamOneScore, Math.abs(teamOneScore - teamTwoScore))
-        playerThree.gamesPlayed += 1
+        playerOne.soloBordfodboldRating = calculateSoloElo(playerOne.soloBordfodboldRating, playerThree.soloBordfodboldRating, teamOneScore > teamTwoScore, Math.abs(teamOneScore - teamTwoScore))
+        playerOne.bordfodboldGamesPlayed += 1
+        playerThree.soloBordfodboldRating = calculateSoloElo(playerThree.soloBordfodboldRating, playerOne.soloBordfodboldRating, teamTwoScore > teamOneScore, Math.abs(teamOneScore - teamTwoScore))
+        playerThree.bordfodboldGamesPlayed += 1
         handleAddPlayer(playerOne)
         handleAddPlayer(playerThree)
         const match = {
@@ -50,19 +51,20 @@ const AddMatchModal: FC<props> = ({ players, setPlayers, fetchMatches, amount })
         }
         await handleAddMatch(match)
         await updateRankings()
+        fetchPlayers()
     }
 
     const postDuoMatch = async () => {
         if (!playerOne || !playerTwo || !playerThree || !playerFour) return
-        const newRatings = calculateDuoElo(playerOne.teamRating, playerTwo.teamRating, playerThree.teamRating, playerFour.teamRating, teamOneScore > teamTwoScore, Math.abs(teamOneScore - teamTwoScore))
-        playerOne.teamRating = newRatings[0]
-        playerOne.gamesPlayed += 1
-        playerTwo.teamRating = newRatings[1]
-        playerTwo.gamesPlayed += 1
-        playerThree.teamRating = newRatings[2]
-        playerThree.gamesPlayed += 1
-        playerFour.teamRating = newRatings[3]
-        playerFour.gamesPlayed += 1
+        const newRatings = calculateDuoElo(playerOne.teamBordfodboldRating, playerTwo.teamBordfodboldRating, playerThree.teamBordfodboldRating, playerFour.teamBordfodboldRating, teamOneScore > teamTwoScore, Math.abs(teamOneScore - teamTwoScore))
+        playerOne.teamBordfodboldRating = newRatings[0]
+        playerOne.bordfodboldGamesPlayed += 1
+        playerTwo.teamBordfodboldRating = newRatings[1]
+        playerTwo.bordfodboldGamesPlayed += 1
+        playerThree.teamBordfodboldRating = newRatings[2]
+        playerThree.bordfodboldGamesPlayed += 1
+        playerFour.teamBordfodboldRating = newRatings[3]
+        playerFour.bordfodboldGamesPlayed += 1
         handleAddPlayer(playerOne)
         handleAddPlayer(playerTwo)
         handleAddPlayer(playerThree)
@@ -78,25 +80,26 @@ const AddMatchModal: FC<props> = ({ players, setPlayers, fetchMatches, amount })
         }
         await handleAddMatch(match)
         await updateRankings()
+        fetchPlayers()
     }
 
     const updateRankings = async () => {
         let tempPlayers: IPlayer[] = await handleFetchPlayers()
         tempPlayers.sort((a, b) => (
-            b.soloRating - a.soloRating
+            b.soloBordfodboldRating - a.soloBordfodboldRating
         ))
         for (let i = 0; i < tempPlayers.length; i++) {
             if (i === 0) {
-                tempPlayers[i].rank = 1
+                tempPlayers[i].bordfodboldRank = 1
                 await handleAddPlayer(tempPlayers[i])
                 continue
             }
-            if (tempPlayers[i].soloRating === tempPlayers[i - 1].soloRating) {
-                tempPlayers[i].rank = tempPlayers[i - 1].rank
+            if (tempPlayers[i].soloBordfodboldRating === tempPlayers[i - 1].soloBordfodboldRating) {
+                tempPlayers[i].bordfodboldRank = tempPlayers[i - 1].bordfodboldRank
                 await handleAddPlayer(tempPlayers[i])
                 continue
             } else {
-                tempPlayers[i].rank = tempPlayers[i - 1].rank + 1
+                tempPlayers[i].bordfodboldRank = tempPlayers[i - 1].bordfodboldRank + 1
                 await handleAddPlayer(tempPlayers[i])
                 continue
             }
@@ -213,4 +216,4 @@ const AddMatchModal: FC<props> = ({ players, setPlayers, fetchMatches, amount })
     )
 }
 
-export default AddMatchModal
+export default AddBFMatchModal

@@ -1,15 +1,15 @@
 import React from 'react'
 import { handleFetchPlayers } from '@/common/handlePlayerEmilio183'
-import { handleFetchMatches } from '@/common/handleMatchEmilio183'
-import { IPlayer, IMatch } from '../../../typings'
+import { handleFetchBTMatches } from '@/common/handleBTMatchEmilio183'
+import { IPlayer, IBTMatch } from '../../../typings'
 import { v4 as uuid } from 'uuid'
 import { useState } from 'react'
-import AddBFMatchModal from '@/components/AddBFMatchModalEmilio183'
+import AddBTMatchModal from '@/components/AddBTMatchModalEmilio183'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 function Matches() {
     const [players, setPlayers] = useState<IPlayer[]>([])
-    const [matches, setMatches] = useState<IMatch[]>([])
+    const [matches, setMatches] = useState<IBTMatch[]>([])
     const [matchAmount, setMatchAmount] = useState<number>(20)
 
     React.useEffect(() => {
@@ -22,7 +22,7 @@ function Matches() {
     }, [matches])
 
     const fetchMatches = async (amount: number) => {
-        const fetchedMatches: IMatch[] = await handleFetchMatches(amount)
+        const fetchedMatches: IBTMatch[] = await handleFetchBTMatches(amount)
         setMatches(fetchedMatches)
     }
 
@@ -40,7 +40,7 @@ function Matches() {
         <div className=''>
             <div className='min-h-screen max-w-screen flex flex-col justify-start'>
                 <div className=''>
-                    <AddBFMatchModal fetchPlayers={fetchPlayers} players={players} setPlayers={setPlayers} fetchMatches={fetchMatches} amount={matchAmount} />
+                    <AddBTMatchModal fetchPlayers={fetchPlayers} players={players} setPlayers={setPlayers} fetchMatches={fetchMatches} amount={matchAmount} />
                 </div>
                 <div className='overflow-x-auto'>
                     <table className='table w-full'>
@@ -60,7 +60,6 @@ function Matches() {
                                 return (
                                     <tr key={match.id} className='hover'>
                                         <th>{index + 1}</th>
-                                        <td>{match.type}</td>
                                         <td>
                                             {
                                                 match.playersTeamOne.map((player) => {
