@@ -11,7 +11,7 @@ interface props {
 
 const RankListValues: React.FC<props> = ({ player, rank, soloRating, teamRating, gamesPlayed }) => {
     return (
-        <tr key={player.id}>
+        <tr>
             <th>{rank}</th>
             <td>{player.name}</td>
             <td>{soloRating}</td>

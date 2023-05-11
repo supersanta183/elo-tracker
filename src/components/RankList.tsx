@@ -26,7 +26,9 @@ const RankList: React.FC<props> = ({players, rank, soloRating, teamRating, games
           <tbody>
             {players.map((player) => {
               return (
-                <RankListValues player={player} rank={player[rank]} soloRating={player[soloRating]} teamRating={player[teamRating]} gamesPlayed={player[gamesPlayed]} />
+                <div key={player.id}>
+                    <RankListValues player={player} rank={player[rank]} soloRating={player[soloRating]} teamRating={player[teamRating]} gamesPlayed={player[gamesPlayed]} />
+                </div>
               )
             })}
           </tbody>

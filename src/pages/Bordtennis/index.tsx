@@ -3,7 +3,7 @@ import { IPlayer } from '../../../typings'
 import { handleFetchPlayers } from '@/common/handlePlayerEmilio183'
 import RankList from '@/components/RankListEmilio183'
 
-function index() {
+function Home() {
     const [players, setPlayers] = React.useState<IPlayer[]>([])
 
   React.useEffect(() => {
@@ -25,4 +25,4 @@ function index() {
   )
 }
 
-export default index
+export default Home
