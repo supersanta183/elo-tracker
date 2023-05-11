@@ -1,10 +1,10 @@
 import React from 'react'
 import { handleFetchPlayers } from '@/common/handlePlayerEmilio183'
 import { handleFetchMatches } from '@/common/handleMatchEmilio183'
-import { IPlayer, IMatch } from '../../typings'
+import { IPlayer, IMatch } from '../../../typings'
 import { v4 as uuid } from 'uuid'
 import { useState } from 'react'
-import AddMatchModal from '@/components/AddMatchModalEmilio183'
+import AddBFMatchModal from '@/components/AddBFMatchModalEmilio183'
 import InfiniteScroll from 'react-infinite-scroll-component'
 
 function Matches() {
@@ -40,19 +40,19 @@ function Matches() {
         <div className=''>
             <div className='min-h-screen max-w-screen flex flex-col justify-start'>
                 <div className=''>
-                    <AddMatchModal players={players} setPlayers={setPlayers} fetchMatches={fetchMatches} amount={matchAmount} />
+                    <AddBFMatchModal fetchPlayers={fetchPlayers} players={players} setPlayers={setPlayers} fetchMatches={fetchMatches} amount={matchAmount} />
                 </div>
                 <div className='overflow-x-auto'>
                     <table className='table w-full'>
                         <thead>
                             <tr>
-                                <th className='sticky top-0 z-10'></th>
-                                <th className='sticky top-0 z-10'>Match type</th>
-                                <th className='sticky top-0 z-10'>Team one</th>
-                                <th className='sticky top-0 z-10'>Team two</th>
-                                <th className='sticky top-0 z-10'>Team one score</th>
-                                <th className='sticky top-0 z-10'>Team two score</th>
-                                <th className='sticky top-0 z-10'>Winner</th>
+                                <th className='top-0 z-10'></th>
+                                <th className='top-0 z-10'>Match type</th>
+                                <th className='top-0 z-10'>Team one</th>
+                                <th className='top-0 z-10'>Team two</th>
+                                <th className='top-0 z-10'>Team one score</th>
+                                <th className='top-0 z-10'>Team two score</th>
+                                <th className='top-0 z-10'>Winner</th>
                             </tr>
                         </thead>
                         <tbody>
