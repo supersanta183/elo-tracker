@@ -102,8 +102,8 @@ const AddMatchModal: FC<props> = ({ players, setPlayers, fetchMatches, amount })
         }
     }
 
-    function calculateSoloElo(playerRating: number, opponentRating: number, playerWon: Boolean, goalDifference: number, K = 10) {
-        const expectedOutcome = 1 / (1 + Math.pow(10, (opponentRating - playerRating) / 400));
+    function calculateSoloElo(playerRating: number, opponentRating: number, playerWon: Boolean, goalDifference: number, K = 32) {
+        const expectedOutcome = 1 / (1 + Math.pow(10, (opponentRating - playerRating) / 1500));
         const actualOutcome = playerWon ? 1 : 0;
 
         // Calculate the weight based on the goal difference
@@ -113,12 +113,12 @@ const AddMatchModal: FC<props> = ({ players, setPlayers, fetchMatches, amount })
         return Math.round(newRating);
     }
 
-    function calculateDuoElo(player1Rating: number, player2Rating: number, player3Rating: number, player4Rating: number, team1Won: Boolean, goalDifference: number, K = 10) {
+    function calculateDuoElo(player1Rating: number, player2Rating: number, player3Rating: number, player4Rating: number, team1Won: Boolean, goalDifference: number, K = 32) {
         const team1Rating = (player1Rating + player2Rating) / 2;
         const team2Rating = (player3Rating + player4Rating) / 2;
 
-        const expectedOutcomeTeam1 = 1 / (1 + Math.pow(10, (team2Rating - team1Rating) / 400));
-        const expectedOutcomeTeam2 = 1 / (1 + Math.pow(10, (team1Rating - team2Rating) / 400));
+        const expectedOutcomeTeam1 = 1 / (1 + Math.pow(10, (team2Rating - team1Rating) / 1500));
+        const expectedOutcomeTeam2 = 1 / (1 + Math.pow(10, (team1Rating - team2Rating) / 1500));
 
         const actualOutcomeTeam1 = team1Won ? 1 : 0;
         const actualOutcomeTeam2 = team1Won ? 0 : 1;
