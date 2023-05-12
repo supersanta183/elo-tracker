@@ -2,6 +2,8 @@ import { db } from "../../firebase";
 import { setDoc, doc, collection, getDocs, deleteDoc, where, CollectionReference, DocumentData, query, orderBy, limit} from 'firebase/firestore'
 import { IBTMatch } from "../../typings";
 
+//handles fetching and posting of bordtennis matches
+
 async function handleAddBTMatch(match:IBTMatch) {
   const matchRef = collection(db, 'bordTennisMatches')
   await setDoc(doc(matchRef, match.id.toString()), match)

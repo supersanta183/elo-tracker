@@ -1,84 +1,47 @@
 import React, { FC, useState } from 'react'
-import { IPlayer, IMatch } from '../../typings';
-import handleAddMatch from '@/common/handleMatchEmilio183';
+import handleAddBTMatch from '@/common/handleBTMatchEmilio183';
 import handleAddPlayer, { handleFetchPlayers } from '@/common/handlePlayerEmilio183';
 import { calculateDuoElo, calculateSoloElo } from '@/common/calculateEloEmilio183';
 import { v4 as uuid } from 'uuid'
+import { IPlayer } from '../../../typings';
 
 interface props {
     players: IPlayer[];
-    setPlayers: React.Dispatch<React.SetStateAction<IPlayer[]>>;
     fetchPlayers: () => void;
     fetchMatches: (amount: number) => void;
     amount: number;
 }
 
-const AddBFMatchModal: FC<props> = ({ players, setPlayers, fetchPlayers, fetchMatches, amount }) => {
+const AddBTMatchModal: FC<props> = ({ players, fetchPlayers, fetchMatches, amount }) => {
     const [playerOne, setPlayerOne] = useState<IPlayer | null>(null)
     const [playerTwo, setPlayerTwo] = useState<IPlayer | null>(null)
-    const [playerThree, setPlayerThree] = useState<IPlayer | null>(null)
-    const [playerFour, setPlayerFour] = useState<IPlayer | null>(null)
     const [teamOneScore, setTeamOneScore] = useState<number>(0)
     const [teamTwoScore, setTeamTwoScore] = useState<number>(0)
     const [teamSize, setTeamSize] = useState<number>(1)
 
     const handlePostMatch = () => {
-        if (teamSize === 1) {
-            postSoloMatch()
-            fetchMatches(amount)
-        } else if (teamSize === 2) {
-            postDuoMatch()
-            fetchMatches(amount)
-        }
+        postSoloMatch()
+        fetchMatches(amount)
+
     }
 
     const postSoloMatch = async () => {
-        if (!playerOne || !playerThree) return
-        playerOne.soloBordfodboldRating = calculateSoloElo(playerOne.soloBordfodboldRating, playerThree.soloBordfodboldRating, teamOneScore > teamTwoScore, Math.abs(teamOneScore - teamTwoScore))
-        playerOne.bordfodboldGamesPlayed += 1
-        playerThree.soloBordfodboldRating = calculateSoloElo(playerThree.soloBordfodboldRating, playerOne.soloBordfodboldRating, teamTwoScore > teamOneScore, Math.abs(teamOneScore - teamTwoScore))
-        playerThree.bordfodboldGamesPlayed += 1
-        handleAddPlayer(playerOne)
-        handleAddPlayer(playerThree)
-        const match = {
-            id: uuid(),
-            type: "solo",
-            timeStamp: new Date(),
-            playersTeamOne: [playerOne],
-            playersTeamTwo: [playerThree],
-            teamOneScore: teamOneScore,
-            teamTwoScore: teamTwoScore,
-        }
-        await handleAddMatch(match)
-        await updateRankings()
-        fetchPlayers()
-    }
-
-    const postDuoMatch = async () => {
-        if (!playerOne || !playerTwo || !playerThree || !playerFour) return
-        const newRatings = calculateDuoElo(playerOne.teamBordfodboldRating, playerTwo.teamBordfodboldRating, playerThree.teamBordfodboldRating, playerFour.teamBordfodboldRating, teamOneScore > teamTwoScore, Math.abs(teamOneScore - teamTwoScore))
-        playerOne.teamBordfodboldRating = newRatings[0]
-        playerOne.bordfodboldGamesPlayed += 1
-        playerTwo.teamBordfodboldRating = newRatings[1]
-        playerTwo.bordfodboldGamesPlayed += 1
-        playerThree.teamBordfodboldRating = newRatings[2]
-        playerThree.bordfodboldGamesPlayed += 1
-        playerFour.teamBordfodboldRating = newRatings[3]
-        playerFour.bordfodboldGamesPlayed += 1
+        if (!playerOne || !playerTwo) return
+        playerOne.soloBordTennisRating = calculateSoloElo(playerOne.soloBordTennisRating, playerTwo.soloBordTennisRating, teamOneScore > teamTwoScore, Math.abs(teamOneScore - teamTwoScore))
+        playerOne.bordTennisGamesPlayed += 1
+        playerTwo.soloBordTennisRating = calculateSoloElo(playerTwo.soloBordTennisRating, playerOne.soloBordTennisRating, teamTwoScore > teamOneScore, Math.abs(teamOneScore - teamTwoScore))
+        playerTwo.bordTennisGamesPlayed += 1
         handleAddPlayer(playerOne)
         handleAddPlayer(playerTwo)
-        handleAddPlayer(playerThree)
-        handleAddPlayer(playerFour)
         const match = {
             id: uuid(),
-            type: "duo",
             timeStamp: new Date(),
-            playersTeamOne: [playerOne, playerTwo],
-            playersTeamTwo: [playerThree, playerFour],
+            playersTeamOne: [playerOne],
+            playersTeamTwo: [playerTwo],
             teamOneScore: teamOneScore,
             teamTwoScore: teamTwoScore,
         }
-        await handleAddMatch(match)
+        await handleAddBTMatch(match)
         await updateRankings()
         fetchPlayers()
     }
@@ -86,20 +49,20 @@ const AddBFMatchModal: FC<props> = ({ players, setPlayers, fetchPlayers, fetchMa
     const updateRankings = async () => {
         let tempPlayers: IPlayer[] = await handleFetchPlayers()
         tempPlayers.sort((a, b) => (
-            b.soloBordfodboldRating - a.soloBordfodboldRating
+            b.soloBordTennisRating - a.soloBordTennisRating
         ))
         for (let i = 0; i < tempPlayers.length; i++) {
             if (i === 0) {
-                tempPlayers[i].bordfodboldRank = 1
+                tempPlayers[i].bordTennisRank = 1
                 await handleAddPlayer(tempPlayers[i])
                 continue
             }
-            if (tempPlayers[i].soloBordfodboldRating === tempPlayers[i - 1].soloBordfodboldRating) {
-                tempPlayers[i].bordfodboldRank = tempPlayers[i - 1].bordfodboldRank
+            if (tempPlayers[i].soloBordTennisRating === tempPlayers[i - 1].soloBordTennisRating) {
+                tempPlayers[i].bordTennisRank = tempPlayers[i - 1].bordTennisRank
                 await handleAddPlayer(tempPlayers[i])
                 continue
             } else {
-                tempPlayers[i].bordfodboldRank = tempPlayers[i - 1].bordfodboldRank + 1
+                tempPlayers[i].bordTennisRank = tempPlayers[i - 1].bordTennisRank + 1
                 await handleAddPlayer(tempPlayers[i])
                 continue
             }
@@ -140,17 +103,6 @@ const AddBFMatchModal: FC<props> = ({ players, setPlayers, fetchPlayers, fetchMa
                                     })
                                 }
                             </select>
-                            {
-                                teamSize === 2 &&
-                                <select className="select select-bordered w-full max-w-xs " value={playerTwo ? JSON.stringify(playerTwo) : ""} onChange={(e) => setPlayerTwo(JSON.parse(e.target.value))}>
-                                    <option selected value={JSON.stringify(null)}>Select player</option>
-                                    {
-                                        players.map((player) => {
-                                            return <option key={player.id} value={JSON.stringify(player)}>{player.name}</option>
-                                        })
-                                    }
-                                </select>
-                            }
                             <div className="form-control w-full max-w-xs">
                                 <label className="label flex justify-center">
                                     <span className="label-text">Team 1 score</span>
@@ -171,7 +123,7 @@ const AddBFMatchModal: FC<props> = ({ players, setPlayers, fetchPlayers, fetchMa
                         {/* team two */}
                         <div className='w-1/2'>
                             <h2 className='text-center'>Team 2</h2>
-                            <select className="select select-bordered w-full max-w-xs " value={playerThree ? JSON.stringify(playerThree) : ""} onChange={(e) => setPlayerThree(JSON.parse(e.target.value))}>
+                            <select className="select select-bordered w-full max-w-xs " value={playerTwo ? JSON.stringify(playerTwo) : ""} onChange={(e) => setPlayerTwo(JSON.parse(e.target.value))}>
                                 <option selected value={JSON.stringify(null)}>Select player</option>
                                 {
                                     players.map((player) => {
@@ -179,17 +131,6 @@ const AddBFMatchModal: FC<props> = ({ players, setPlayers, fetchPlayers, fetchMa
                                     })
                                 }
                             </select>
-                            {
-                                teamSize === 2 &&
-                                <select className="select select-bordered w-full max-w-xs " value={playerFour ? JSON.stringify(playerFour) : ""} onChange={(e) => setPlayerFour(JSON.parse(e.target.value))}>
-                                    <option selected value={JSON.stringify(null)}>Select player</option>
-                                    {
-                                        players.map((player) => {
-                                            return <option key={player.id} value={JSON.stringify(player)}>{player.name}</option>
-                                        })
-                                    }
-                                </select>
-                            }
                             <div className="form-control w-full max-w-xs">
                                 <label className="label flex justify-center">
                                     <span className="label-text">Team 2 score</span>
@@ -216,4 +157,4 @@ const AddBFMatchModal: FC<props> = ({ players, setPlayers, fetchPlayers, fetchMa
     )
 }
 
-export default AddBFMatchModal
+export default AddBTMatchModal
