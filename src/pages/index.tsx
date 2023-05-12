@@ -3,25 +3,14 @@ import { useState } from 'react'
 import handleAddPlayer, { handleFetchPlayers } from '@/common/handlePlayerEmilio183'
 import { IPlayer } from '../../typings'
 import handlePostImage from '@/common/handleImageEmilio183'
+import useFetchPlayers from '@/common/useFetchPlayersEmilio183'
 
 function Players() {
     const [playerName, setPlayerName] = useState<string>('')
-    const [players, setPlayers] = useState<IPlayer[]>([])
-
-    React.useEffect(() => {
-        fetchPlayers()
-    }, [])
+    const {players, fetchPlayers} = useFetchPlayers("bordfodboldRank")
 
     const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setPlayerName(e.target.value)
-    }
-
-    const fetchPlayers = async () => {
-        const data: IPlayer[] = await handleFetchPlayers()
-        data.sort((a, b) => ( //sort players by ranks in ascending order
-            a.bordfodboldRank - b.bordfodboldRank
-        ))
-        setPlayers(data)
     }
 
     const addPlayer = async () => {

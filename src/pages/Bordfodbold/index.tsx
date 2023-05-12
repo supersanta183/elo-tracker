@@ -4,6 +4,7 @@ import { IPlayer } from '../../../typings'
 import handleAddPlayer, { handleFetchPlayers } from '@/common/handlePlayerEmilio183'
 import { useState } from 'react'
 import RankList from '@/components/RankListEmilio183'
+import useFetchPlayers from '@/common/useFetchPlayersEmilio183'
 
 
 const inter = Inter({ subsets: ['latin'] })

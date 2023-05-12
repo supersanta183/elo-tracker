@@ -4,6 +4,8 @@ import { setDoc, doc, collection, getDocs, deleteDoc, where, CollectionReference
 import {getDownloadURL, ref, uploadBytes} from 'firebase/storage'
 import { storage } from '../../firebase';
 
+//handles posting images used for player pictures
+
   async function handlePostImage(image:File): Promise<string> {
     const nameArray = image.name.split('.')
     const name = nameArray[0]
