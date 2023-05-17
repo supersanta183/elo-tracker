@@ -15,6 +15,9 @@ module.exports = {
       height: {
         'screen-50': 'calc(100vh - 50px)',
       },
+      width: {
+        '1/7': '14.2857143%',
+      },
       position: ['sticky'],
     },
   },
