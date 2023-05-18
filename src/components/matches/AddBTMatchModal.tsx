@@ -69,6 +69,16 @@ const AddBTMatchModal: FC<props> = ({ players, fetchPlayers, fetchMatches, amoun
         }
     }
 
+    const handleTeamTwoGoalsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const result = e.target.value.replace(/\D/g, '')
+        setTeamTwoScore(parseInt(result))
+    }
+
+    const handleTeamOneGoalsChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const result = e.target.value.replace(/\D/g, '')
+        setTeamOneScore(parseInt(result))
+    }
+
     return (
         <div className='w-full pr-2'>
             {/* plus button to add a match */}
@@ -107,15 +117,7 @@ const AddBTMatchModal: FC<props> = ({ players, fetchPlayers, fetchMatches, amoun
                                 <label className="label flex justify-center">
                                     <span className="label-text">Team 1 score</span>
                                 </label>
-                                <select className="select select-bordered" onChange={(e) => setTeamOneScore(parseInt(e.target.value))}>
-                                    {
-                                        Array.from({ length: 11 }, (_, i) => (
-                                            <option key={i} value={i}>
-                                                {i}
-                                            </option>
-                                        ))
-                                    }
-                                </select>
+                                <input type="text" onChange={(e) => handleTeamOneGoalsChange(e)} value={teamOneScore}  placeholder="Type here" className="input input-bordered w-full max-w-xs" />
                             </div>
 
 
@@ -135,15 +137,8 @@ const AddBTMatchModal: FC<props> = ({ players, fetchPlayers, fetchMatches, amoun
                                 <label className="label flex justify-center">
                                     <span className="label-text">Team 2 score</span>
                                 </label>
-                                <select className="select select-bordered" onChange={(e) => setTeamTwoScore(parseInt(e.target.value))}>
-                                    {
-                                        Array.from({ length: 11 }, (_, i) => (
-                                            <option key={i} value={i}>
-                                                {i}
-                                            </option>
-                                        ))
-                                    }
-                                </select>
+                                <input type="text" onChange={(e) => handleTeamTwoGoalsChange(e)} value={teamTwoScore}  placeholder="Type here" className="input input-bordered w-full max-w-xs" />
+
                             </div>
                         </div>
 
